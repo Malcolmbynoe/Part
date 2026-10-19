@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+<link rel="shortcut icon" type="x-icon" href="images/car.png">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Vehicles | Nova Auto Parts & Service
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body class="nova-home page-vehicles">
+
+
+<!-- ============================== -->
+<!-- NAVIGATION -->
+<!-- ============================== -->
+
+<header class="site-header">
+
+    <div class="site-logo">
+
+        <span class="logo-nova">
+            NOVA
+        </span>
+
+        <span class="logo-subtitle">
+            AUTO PARTS & SERVICE
+        </span>
+
+    </div>
+
+
+    <nav class="site-nav">
+
+        <a href="home.html">
+            Home
+        </a>
+
+        <a href="arrivals.html">
+            Vehicles
+        </a>
+
+        <a href="parts_cars.html">
+            Parts
+        </a>
+
+        <a href="orders.html">
+            Orders
+        </a>
+
+        <a href="rentals.html">
+            Rentals
+        </a>
+
+        <a
+            href="account.html"
+            class="account-link"
+        >
+            My Account
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<!-- ============================== -->
+<!-- HERO -->
+<!-- ============================== -->
+
+<section class="hero-section">
+
+    <div class="hero-content">
+
+        <p class="hero-label">
+            NOVA AUTO INVENTORY
+        </p>
+
+        <h1>
+            FIND YOUR
+            <span>NEXT VEHICLE.</span>
+        </h1>
+
+        <p class="hero-description">
+            Browse vehicles currently available
+            from Nova Auto Parts & Service.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ============================== -->
+<!-- VEHICLE INVENTORY -->
+<!-- ============================== -->
+
+<section class="inventory-section">
+
+    <div class="section-heading">
+
+        <p>
+            VEHICLE INVENTORY
+        </p>
+
+        <h2>
+            Available Vehicles
+        </h2>
+
+        <span>
+            Browse our current vehicle inventory.
+        </span>
+
+    </div>
+
+
+    <div
+        id="vehicleGrid"
+        class="vehicle-grid"
+    >
+
+        <div class="loading-message">
+            Loading vehicles...
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ============================== -->
+<!-- FOOTER -->
+<!-- ============================== -->
+
+<footer class="site-footer">
+
+    <div class="footer-contact">
+
+        <h3>CONTACT US</h3>
+
+        <div class="footer-contact-grid">
+
+            <div class="footer-contact-item">
+                <span>📞</span>
+                <div>
+                    <strong>Phone</strong>
+                    <p>+1 (246) 555-1234</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>💬</span>
+                <div>
+                    <strong>WhatsApp</strong>
+                    <p>+1 (246) 555-6789</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>✉️</span>
+                <div>
+                    <strong>Email</strong>
+                    <p>info@novaauto.com</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>📍</span>
+                <div>
+                    <strong>Location</strong>
+                    <p>Barbados</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-brand">
+        <strong>NOVA AUTO</strong>
+        <span>Auto Parts & Service</span>
+    </div>
+
+    <p class="footer-copyright">
+        © 2026 Nova Auto Parts & Service
+    </p>
+
+</footer>
+
+
+
+<script>
+
+const API_URL =
+    "http://localhost:3000";
+
+
+// ========================================
+// LOAD VEHICLES
+// ========================================
+
+async function loadVehicles() {
+
+    const vehicleGrid =
+        document.getElementById(
+            "vehicleGrid"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/vehicles`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load vehicles."
+            );
+
+        }
+
+
+        const vehicles =
+            await response.json();
+
+
+        // Hide sold vehicles
+
+        const availableVehicles =
+            vehicles.filter(
+                vehicle =>
+                    vehicle.status !== "sold"
+            );
+
+
+        if (
+            availableVehicles.length === 0
+        ) {
+
+            vehicleGrid.innerHTML = `
+
+                <div class="empty-inventory">
+
+                    <h3>
+                        No vehicles available
+                    </h3>
+
+                    <p>
+                        Check back soon for
+                        new inventory.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        vehicleGrid.innerHTML =
+            availableVehicles
+                .map(vehicle => `
+
+                    <article class="vehicle-card">
+
+
+                        <div class="vehicle-image">
+
+                            ${
+                                vehicle.image
+
+                                    ? `
+
+                                        <img
+                                            src="${vehicle.image}"
+                                            alt="${vehicle.name}"
+                                        >
+
+                                      `
+
+                                    : `
+
+                                        <div class="no-image">
+
+                                            🚗
+
+                                            <br>
+
+                                            No Image Available
+
+                                        </div>
+
+                                      `
+                            }
+
+                        </div>
+
+
+                        <div class="vehicle-info">
+
+
+                            <div class="vehicle-category">
+
+                                ${
+                                    vehicle.category ||
+                                    "VEHICLE"
+                                }
+
+                            </div>
+
+
+                            <h3>
+                                ${vehicle.name}
+                            </h3>
+
+
+                            ${
+                                vehicle.year
+
+                                    ? `
+
+                                        <p class="vehicle-year">
+                                            ${vehicle.year}
+                                        </p>
+
+                                      `
+
+                                    : ""
+                            }
+
+
+                            <p class="vehicle-description">
+
+                                ${
+                                    vehicle.description ||
+                                    "Vehicle available from Nova Auto Parts & Service."
+                                }
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Status:
+                                </strong>
+
+                                ${
+                                    vehicle.status ===
+                                    "reserved"
+
+                                        ? "Reserved"
+
+                                        : "Available"
+                                }
+
+                            </p>
+
+
+                            <div class="vehicle-bottom">
+
+
+                                <strong class="vehicle-price">
+
+                                    $${Number(
+                                        vehicle.price
+                                    ).toLocaleString()}
+
+                                </strong>
+
+
+                                ${
+                                    vehicle.status ===
+                                    "reserved"
+
+                                        ? `
+
+                                            <button
+                                                class="vehicle-button"
+                                                disabled
+                                            >
+                                                Reserved
+                                            </button>
+
+                                          `
+
+                                        : `
+
+                                            <a
+                                                href="orders.html?type=vehicle&id=${vehicle.id}"
+                                                class="vehicle-button"
+                                            >
+                                                Enquire
+                                            </a>
+
+                                          `
+                                }
+
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                `)
+                .join("");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        vehicleGrid.innerHTML = `
+
+            <div class="empty-inventory">
+
+                <h3>
+                    Unable to load vehicles
+                </h3>
+
+                <p>
+                    Please make sure the Nova Auto
+                    server is running.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+loadVehicles();
+
+</script>
+
+
+</body>
+
+</html>

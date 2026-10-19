@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="shortcut icon" type="x-icon" href="images/car.png">
+    
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Order | Nova Auto Parts & Service</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nova-home page-orders">
+
+<header class="site-header">
+
+    <div class="site-logo">
+        <span class="logo-nova">NOVA</span>
+
+        <span class="logo-subtitle">
+            AUTO PARTS & SERVICE
+        </span>
+    </div>
+
+    <nav class="site-nav">
+        <a href="home.html">Home</a>
+        <a href="arrivals.html">Vehicles</a>
+        <a href="parts_cars.html">Parts</a>
+        <a href="orders.html">Orders</a>
+        <a href="rentals.html">Rentals</a>
+        <a href="account.html" class="account-link">
+            My Account
+        </a>
+    </nav>
+
+</header>
+
+
+<main class="auth-page">
+
+    <div class="auth-card">
+
+        <div class="account-badge">
+            NOVA ORDER
+        </div>
+
+        <h1>Place an Order</h1>
+
+        <p id="orderMessage">
+            Complete the form below to submit your order.
+        </p>
+
+
+        <form id="orderForm">
+
+            <label for="itemType">
+                Order Type
+            </label>
+
+            <select id="itemType" required>
+
+                <option value="">
+                    Select order type
+                </option>
+
+                <option value="part">
+                    Auto Part
+                </option>
+
+                <option value="vehicle">
+                    Vehicle
+                </option>
+
+                <option value="special">
+                    Special Order
+                </option>
+
+            </select>
+
+
+            <label for="itemDescription">
+                Item
+            </label>
+
+            <input
+                type="text"
+                id="itemDescription"
+                placeholder="What would you like to order?"
+                required
+            >
+
+
+            <label for="quantity">
+                Quantity
+            </label>
+
+            <input
+                type="number"
+                id="quantity"
+                value="1"
+                min="1"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="primary-admin-button"
+                id="submitOrderButton"
+            >
+                Submit Order
+            </button>
+
+        </form>
+
+
+        <p class="auth-switch">
+            <a href="parts_cars.html">
+                ← Back to Parts
+            </a>
+        </p>
+
+    </div>
+
+</main>
+
+
+<script>
+
+const API_URL =
+    "http://localhost:3000";
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const requestedType =
+    params.get("type");
+
+const requestedId =
+    params.get("id");
+
+
+const itemType =
+    document.getElementById("itemType");
+
+const itemDescription =
+    document.getElementById("itemDescription");
+
+
+// ========================================
+// LOAD SELECTED ITEM
+// ========================================
+
+async function loadSelectedItem() {
+
+    if (!requestedType) {
+        return;
+    }
+
+
+    if (requestedType === "part") {
+
+        itemType.value = "part";
+
+        if (!requestedId) {
+            return;
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/parts`
+                );
+
+            const parts =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load part."
+                );
+
+            }
+
+
+            const selectedPart =
+                parts.find(
+                    part =>
+                        String(part.id) ===
+                        String(requestedId)
+                );
+
+
+            if (selectedPart) {
+
+                itemDescription.value =
+                    selectedPart.name;
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+
+    if (requestedType === "vehicle") {
+
+        itemType.value = "vehicle";
+
+        if (!requestedId) {
+            return;
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/api/vehicles`
+                );
+
+            const vehicles =
+                await response.json();
+
+
+            const selectedVehicle =
+                vehicles.find(
+                    vehicle =>
+                        String(vehicle.id) ===
+                        String(requestedId)
+                );
+
+
+            if (selectedVehicle) {
+
+                itemDescription.value =
+                    selectedVehicle.name;
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+}
+
+
+loadSelectedItem();
+
+
+// ========================================
+// SUBMIT ORDER
+// ========================================
+
+document
+    .getElementById("orderForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const token =
+                localStorage.getItem(
+                    "novaToken"
+                );
+
+
+            if (!token) {
+
+                alert(
+                    "Please login before placing an order."
+                );
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+            const button =
+                document.getElementById(
+                    "submitOrderButton"
+                );
+
+
+            button.disabled = true;
+
+            button.textContent =
+                "Submitting...";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/api/orders`,
+                        {
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "Authorization":
+                                    `Bearer ${token}`
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    item_type:
+                                        itemType.value,
+
+                                    item_description:
+                                        itemDescription.value.trim(),
+
+                                    quantity:
+                                        Number(
+                                            document
+                                                .getElementById(
+                                                    "quantity"
+                                                )
+                                                .value
+                                        )
+
+                                })
+
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to submit order."
+                    );
+
+                }
+
+
+                alert(
+                    `Order submitted successfully! Order #${data.orderId}`
+                );
+
+
+                window.location.href =
+                    "account.html";
+
+
+            } catch (error) {
+
+                alert(
+                    error.message
+                );
+
+
+                button.disabled = false;
+
+                button.textContent =
+                    "Submit Order";
+
+            }
+
+        }
+    );
+
+<footer class="site-footer">
+
+    <div class="footer-contact">
+
+        <h3>CONTACT US</h3>
+
+        <div class="footer-contact-grid">
+
+            <div class="footer-contact-item">
+                <span>📞</span>
+                <div>
+                    <strong>Phone</strong>
+                    <p>+1 (246) 555-1234</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>💬</span>
+                <div>
+                    <strong>WhatsApp</strong>
+                    <p>+1 (246) 555-6789</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>✉️</span>
+                <div>
+                    <strong>Email</strong>
+                    <p>info@novaauto.com</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>📍</span>
+                <div>
+                    <strong>Location</strong>
+                    <p>Barbados</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-brand">
+        <strong>NOVA AUTO</strong>
+        <span>Auto Parts & Service</span>
+    </div>
+
+    <p class="footer-copyright">
+        © 2026 Nova Auto Parts & Service
+    </p>
+
+</footer>
+
+</script>
+
+</body>
+
+</html>

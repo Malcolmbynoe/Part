@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="shortcut icon" type="x-icon" href="images/car.png">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Vehicle Rentals | Nova Auto Parts & Service
+    </title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nova-home page-rentals">
+
+    <!-- HEADER -->
+
+    <header class="site-header">
+
+        <a href="home.html" class="site-logo">
+            <span class="logo-nova">NOVA AUTO</span>
+            <span class="logo-subtitle">
+                AUTO PARTS & SERVICE
+            </span>
+        </a>
+
+        <nav class="site-nav">
+
+            <a href="home.html">
+                Home
+            </a>
+
+            <a href="arrivals.html">
+                Vehicles
+            </a>
+
+            <a href="parts_cars.html">
+                Parts
+            </a>
+
+            <a href="rentals.html">
+                Rentals
+            </a>
+
+            <a href="orders.html">
+                Orders
+            </a>
+
+            <a
+                href="account.html"
+                class="account-link"
+            >
+                My Account
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- HERO -->
+
+    <section class="hero-section">
+
+        <div class="hero-content">
+
+            <span class="hero-label">
+                NOVA VEHICLE RENTALS
+            </span>
+
+            <h1>
+                DRIVE YOUR WAY.
+            </h1>
+
+            <p class="hero-description">
+                Need a vehicle for a day, week or longer?
+                Browse Nova Auto's available rental vehicles
+                and send us your rental request.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a
+                    href="#rentalVehicles"
+                    class="hero-button primary"
+                >
+                    Browse Rentals
+                </a>
+
+                <a
+                    href="account.html"
+                    class="hero-button secondary"
+                >
+                    My Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RENTAL VEHICLES -->
+
+    <section
+        class="inventory-section"
+        id="rentalVehicles"
+    >
+
+        <div class="section-heading">
+
+            <span class="hero-label">
+                AVAILABLE NOW
+            </span>
+
+            <h2>
+                Rental Vehicles
+            </h2>
+
+            <p>
+                Choose a vehicle and submit your rental request.
+            </p>
+
+        </div>
+
+
+        <div
+            class="vehicle-grid"
+            id="rentalGrid"
+        >
+
+            <p>
+                Loading rental vehicles...
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer class="site-footer">
+
+        <div class="footer-contact">
+
+            <h3>CONTACT US</h3>
+
+            <div class="footer-contact-grid">
+
+                <div class="footer-contact-item">
+
+                    <span>📞</span>
+
+                    <div>
+                        <strong>Phone</strong>
+                        <p>
+                            +1 (246) 555-1234
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="footer-contact-item">
+
+                    <span>💬</span>
+
+                    <div>
+                        <strong>WhatsApp</strong>
+                        <p>
+                            +1 (246) 555-6789
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="footer-contact-item">
+
+                    <span>✉️</span>
+
+                    <div>
+                        <strong>Email</strong>
+                        <p>
+                            info@novaauto.com
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="footer-contact-item">
+
+                    <span>📍</span>
+
+                    <div>
+                        <strong>Location</strong>
+                        <p>
+                            Barbados
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-divider"></div>
+
+
+        <div class="footer-brand">
+
+            <strong>
+                NOVA AUTO
+            </strong>
+
+            <span>
+                Auto Parts & Service
+            </span>
+
+        </div>
+
+
+        <p class="footer-copyright">
+            © 2026 Nova Auto Parts & Service
+        </p>
+
+    </footer>
+
+    <!-- =========================================
+     RENTAL BOOKING MODAL
+========================================= -->
+
+<div id="rentalBookingModal" class="modal">
+
+    <div class="modal-content rental-booking-content">
+
+        <div class="modal-header">
+
+            <div>
+                <span class="vehicle-category">
+                    VEHICLE RENTAL
+                </span>
+
+                <h2 id="rentalVehicleName">
+                    Rent Vehicle
+                </h2>
+            </div>
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeRentalBooking()"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+        <form id="rentalBookingForm">
+
+            <input
+                type="hidden"
+                id="rentalVehicleId"
+            >
+
+
+            <div class="form-group">
+
+                <label for="rentalRateType">
+                    Rental Rate
+                </label>
+
+                <select
+                    id="rentalRateType"
+                    required
+                    onchange="calculateRentalTotal()"
+                >
+
+                    <option value="">
+                        Select rental rate
+                    </option>
+
+                    <option
+                        value="daily"
+                        id="dailyRateOption"
+                    >
+                        Daily
+                    </option>
+
+                    <option
+                        value="weekly"
+                        id="weeklyRateOption"
+                    >
+                        Weekly
+                    </option>
+
+                    <option
+                        value="monthly"
+                        id="monthlyRateOption"
+                    >
+                        Monthly
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="rentalPickupDate">
+                    Pickup Date
+                </label>
+
+                <input
+    type="date"
+    id="rentalPickupDate"
+    required
+    onchange="updateRentalDates()"
+>
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="rentalReturnDate">
+                    Return Date
+                </label>
+
+                <input
+                    type="date"
+                    id="rentalReturnDate"
+                    required
+                    onchange="updateRentalDates()"
+                >
+
+            </div>
+
+
+            <div class="rental-summary">
+
+                <div>
+                    <span>Rental Length</span>
+
+                    <strong id="rentalLength">
+                        —
+                    </strong>
+                </div>
+
+
+                <div>
+                    <span>Rate</span>
+
+                    <strong id="selectedRentalRate">
+                        —
+                    </strong>
+                </div>
+
+
+                <div class="rental-total-row">
+
+                    <span>Estimated Total</span>
+
+                    <strong id="rentalTotal">
+                        $0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <p
+                id="rentalBookingMessage"
+                class="login-message"
+            ></p>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="delete-button"
+                    onclick="closeRentalBooking()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="edit-button"
+                >
+                    Submit Rental Request
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+    <script>
+
+const API =
+    "http://localhost:3000";
+
+
+let rentalVehicles = [];
+
+
+/* =========================================
+   LOAD RENTAL VEHICLES
+========================================= */
+
+async function loadRentals() {
+
+    const grid =
+        document.getElementById(
+            "rentalGrid"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API}/api/vehicles`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load rentals."
+            );
+
+        }
+
+
+        const vehicles =
+            await response.json();
+
+
+        const rentals =
+            vehicles.filter(vehicle => {
+
+                const category =
+                    String(
+                        vehicle.category || ""
+                    ).toLowerCase();
+
+
+                return (
+                    (
+                        category.includes("rental") ||
+                        category.includes("rent") ||
+                        category.includes("hire")
+                    ) &&
+                    vehicle.status !== "sold"
+                );
+
+            });
+
+
+        rentalVehicles = rentals;
+
+
+        if (rentals.length === 0) {
+
+            grid.innerHTML = `
+
+                <div class="vehicle-card">
+
+                    <div class="vehicle-info">
+
+                        <span class="vehicle-category">
+                            RENTALS
+                        </span>
+
+                        <h3>
+                            No rental vehicles available
+                        </h3>
+
+                        <p class="vehicle-description">
+                            Check back soon for new
+                            rental vehicles.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        grid.innerHTML =
+            rentals.map(vehicle => {
+
+
+                const image =
+                    vehicle.image
+                        ? `
+                            <img
+                                src="${vehicle.image}"
+                                alt="${vehicle.name}"
+                                class="vehicle-image"
+                            >
+                        `
+                        : `
+                            <div class="no-image">
+                                🚗
+                                <br>
+                                No Image Available
+                            </div>
+                        `;
+
+
+                const unavailable =
+                    vehicle.status ===
+                    "reserved";
+
+
+                const dailyRate =
+                    vehicle.daily_rate != null
+                        ? "$" +
+                          Number(
+                              vehicle.daily_rate
+                          ).toLocaleString()
+                        : "N/A";
+
+
+                const weeklyRate =
+                    vehicle.weekly_rate != null
+                        ? "$" +
+                          Number(
+                              vehicle.weekly_rate
+                          ).toLocaleString()
+                        : "N/A";
+
+
+                const monthlyRate =
+                    vehicle.monthly_rate != null
+                        ? "$" +
+                          Number(
+                              vehicle.monthly_rate
+                          ).toLocaleString()
+                        : "N/A";
+
+
+                return `
+
+                    <article class="vehicle-card">
+
+                        ${image}
+
+
+                        <div class="vehicle-info">
+
+                            <span class="vehicle-category">
+                                ${vehicle.category}
+                            </span>
+
+
+                            <h3>
+                                ${vehicle.name}
+                            </h3>
+
+
+                            <p class="vehicle-year">
+                                ${vehicle.year || ""}
+                            </p>
+
+
+                            <p class="vehicle-description">
+                                ${vehicle.description || ""}
+                            </p>
+
+
+                            <!-- RENTAL RATES -->
+
+                            <div class="rental-rates">
+
+
+                                <div class="rental-rate">
+
+                                    <span>
+                                        DAILY
+                                    </span>
+
+                                    <strong>
+                                        ${dailyRate}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="rental-rate">
+
+                                    <span>
+                                        WEEKLY
+                                    </span>
+
+                                    <strong>
+                                        ${weeklyRate}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="rental-rate">
+
+                                    <span>
+                                        MONTHLY
+                                    </span>
+
+                                    <strong>
+                                        ${monthlyRate}
+                                    </strong>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <!-- RENT BUTTON -->
+
+                            <div class="vehicle-bottom">
+
+                                ${
+                                    unavailable
+                                        ? `
+                                            <span
+                                                class="vehicle-button"
+                                                style="
+                                                    opacity: .55;
+                                                    cursor: not-allowed;
+                                                "
+                                            >
+                                                Reserved
+                                            </span>
+                                        `
+                                        : `
+                                            <button
+                                                type="button"
+                                                class="vehicle-button"
+                                                onclick="
+                                                    openRentalBooking(
+                                                        ${vehicle.id}
+                                                    )
+                                                "
+                                            >
+                                                Rent Vehicle
+                                            </button>
+                                        `
+                                }
+
+                            </div>
+
+
+                        </div>
+
+                    </article>
+
+                `;
+
+            }).join("");
+
+
+    } catch (error) {
+
+        console.error(
+            "Rental loading error:",
+            error
+        );
+
+
+        grid.innerHTML = `
+
+            <p>
+                Unable to load rental vehicles.
+                Make sure the Nova server is running.
+            </p>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================
+   RENT VEHICLE
+========================================= */
+
+function openRentalBooking(id) {
+
+    const vehicle =
+        rentalVehicles.find(
+            item =>
+                Number(item.id) ===
+                Number(id)
+        );
+
+
+    if (!vehicle) {
+
+        alert(
+            "Unable to find this rental vehicle."
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "rentalBookingForm"
+    ).reset();
+
+
+    document.getElementById(
+        "rentalVehicleId"
+    ).value =
+        vehicle.id;
+
+
+    document.getElementById(
+        "rentalVehicleName"
+    ).textContent =
+        vehicle.name;
+
+
+    const dailyOption =
+        document.getElementById(
+            "dailyRateOption"
+        );
+
+    const weeklyOption =
+        document.getElementById(
+            "weeklyRateOption"
+        );
+
+    const monthlyOption =
+        document.getElementById(
+            "monthlyRateOption"
+        );
+
+
+    dailyOption.textContent =
+        vehicle.daily_rate != null
+            ? `Daily — $${Number(
+                vehicle.daily_rate
+            ).toLocaleString()}`
+            : "Daily — Not Available";
+
+
+    weeklyOption.textContent =
+        vehicle.weekly_rate != null
+            ? `Weekly — $${Number(
+                vehicle.weekly_rate
+            ).toLocaleString()}`
+            : "Weekly — Not Available";
+
+
+    monthlyOption.textContent =
+        vehicle.monthly_rate != null
+            ? `Monthly — $${Number(
+                vehicle.monthly_rate
+            ).toLocaleString()}`
+            : "Monthly — Not Available";
+
+
+    dailyOption.disabled =
+        vehicle.daily_rate == null;
+
+    weeklyOption.disabled =
+        vehicle.weekly_rate == null;
+
+    monthlyOption.disabled =
+        vehicle.monthly_rate == null;
+
+
+    const today =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+
+    document.getElementById(
+        "rentalPickupDate"
+    ).min =
+        today;
+
+
+    document.getElementById(
+        "rentalReturnDate"
+    ).min =
+        today;
+
+
+    document.getElementById(
+        "rentalLength"
+    ).textContent =
+        "—";
+
+
+    document.getElementById(
+        "selectedRentalRate"
+    ).textContent =
+        "—";
+
+
+    document.getElementById(
+        "rentalTotal"
+    ).textContent =
+        "$0";
+
+
+    document.getElementById(
+        "rentalBookingMessage"
+    ).textContent =
+        "";
+
+
+    document.getElementById(
+        "rentalBookingModal"
+    ).classList.add("open");
+
+}
+
+function closeRentalBooking() {
+
+    document.getElementById(
+        "rentalBookingModal"
+    ).classList.remove("open");
+
+}
+
+function updateRentalDates() {
+
+    const pickupInput =
+        document.getElementById(
+            "rentalPickupDate"
+        );
+
+    const returnInput =
+        document.getElementById(
+            "rentalReturnDate"
+        );
+
+    const pickupDate =
+        pickupInput.value;
+
+
+    if (!pickupDate) {
+        return;
+    }
+
+
+    /*
+        Return date must be at least
+        one day after pickup.
+    */
+
+    const pickup =
+        new Date(
+            pickupDate + "T00:00:00Z"
+        );
+
+
+    const minimumReturn =
+        new Date(
+            pickup.getTime() +
+            (24 * 60 * 60 * 1000)
+        );
+
+
+    const minimumReturnString =
+        minimumReturn
+            .toISOString()
+            .split("T")[0];
+
+
+    returnInput.min =
+        minimumReturnString;
+
+
+    /*
+        If there is no return date yet,
+        automatically select the next day.
+    */
+
+    if (!returnInput.value) {
+
+        returnInput.value =
+            minimumReturnString;
+
+    }
+
+
+    /*
+        If the current return date is
+        invalid, reset it to the next day.
+    */
+
+    if (
+        returnInput.value <= pickupDate
+    ) {
+
+        returnInput.value =
+            minimumReturnString;
+
+    }
+
+
+    calculateRentalTotal();
+
+}
+
+/* =========================================
+   CALCULATE RENTAL TOTAL
+========================================= */
+
+function calculateRentalTotal() {
+
+    const vehicleId =
+        document.getElementById(
+            "rentalVehicleId"
+        ).value;
+
+    const rateType =
+        document.getElementById(
+            "rentalRateType"
+        ).value;
+
+    const pickupDate =
+        document.getElementById(
+            "rentalPickupDate"
+        ).value;
+
+    const returnDate =
+        document.getElementById(
+            "rentalReturnDate"
+        ).value;
+
+
+    const lengthElement =
+        document.getElementById(
+            "rentalLength"
+        );
+
+    const rateElement =
+        document.getElementById(
+            "selectedRentalRate"
+        );
+
+    const totalElement =
+        document.getElementById(
+            "rentalTotal"
+        );
+
+    const messageElement =
+        document.getElementById(
+            "rentalBookingMessage"
+        );
+
+
+    messageElement.textContent = "";
+
+
+    const vehicle =
+        rentalVehicles.find(
+            item =>
+                Number(item.id) ===
+                Number(vehicleId)
+        );
+
+
+    if (
+        !vehicle ||
+        !rateType ||
+        !pickupDate ||
+        !returnDate
+    ) {
+
+        lengthElement.textContent = "—";
+        rateElement.textContent = "—";
+        totalElement.textContent = "$0";
+
+        return;
+    }
+
+
+    /*
+        Convert YYYY-MM-DD into UTC dates.
+
+        Using UTC helps prevent daylight-saving
+        and timezone issues when counting days.
+    */
+
+    const pickup =
+        new Date(
+            `${pickupDate}T00:00:00Z`
+        );
+
+    const returning =
+        new Date(
+            `${returnDate}T00:00:00Z`
+        );
+
+
+    const millisecondsPerDay =
+        1000 * 60 * 60 * 24;
+
+
+    const days =
+        Math.ceil(
+            (
+                returning.getTime() -
+                pickup.getTime()
+            ) /
+            millisecondsPerDay
+        );
+
+
+    /*
+        Return date must be after pickup date.
+    */
+
+    if (days <= 0) {
+
+        lengthElement.textContent =
+            "Invalid dates";
+
+        rateElement.textContent =
+            "—";
+
+        totalElement.textContent =
+            "$0";
+
+        messageElement.textContent =
+            "Return date must be after the pickup date.";
+
+        return;
+    }
+
+
+    /*
+        Automatically prevent the return date
+        from being earlier than pickup.
+    */
+
+    document.getElementById(
+        "rentalReturnDate"
+    ).min =
+        pickupDate;
+
+
+    let rate = 0;
+    let units = 0;
+    let unitName = "";
+
+
+    /*
+        DAILY
+
+        Example:
+        4 days × $50 = $200
+    */
+
+    if (rateType === "daily") {
+
+        rate =
+            Number(
+                vehicle.daily_rate
+            );
+
+        units = days;
+
+        unitName =
+            units === 1
+                ? "day"
+                : "days";
+
+    }
+
+
+    /*
+        WEEKLY
+
+        Partial weeks count as another week.
+
+        Example:
+        15 days = 3 weeks.
+    */
+
+    else if (rateType === "weekly") {
+
+        rate =
+            Number(
+                vehicle.weekly_rate
+            );
+
+        units =
+            Math.ceil(
+                days / 7
+            );
+
+        unitName =
+            units === 1
+                ? "week"
+                : "weeks";
+
+    }
+
+
+    /*
+        MONTHLY
+
+        We use 30-day rental periods.
+
+        Example:
+        45 days = 2 months.
+    */
+
+    else if (rateType === "monthly") {
+
+        rate =
+            Number(
+                vehicle.monthly_rate
+            );
+
+        units =
+            Math.ceil(
+                days / 30
+            );
+
+        unitName =
+            units === 1
+                ? "month"
+                : "months";
+
+    }
+
+
+    if (
+        !Number.isFinite(rate) ||
+        rate < 0
+    ) {
+
+        lengthElement.textContent =
+            `${days} ${
+                days === 1
+                    ? "day"
+                    : "days"
+            }`;
+
+        rateElement.textContent =
+            "Unavailable";
+
+        totalElement.textContent =
+            "$0";
+
+        messageElement.textContent =
+            "This rental rate is not available.";
+
+        return;
+    }
+
+
+    const total =
+        rate * units;
+
+
+    lengthElement.textContent =
+        `${days} ${
+            days === 1
+                ? "day"
+                : "days"
+        } (${units} ${unitName})`;
+
+
+    rateElement.textContent =
+        `$${rate.toLocaleString()}`;
+
+
+    totalElement.textContent =
+        `$${total.toLocaleString(
+            undefined,
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        )}`;
+
+}
+
+/* =========================================
+   SUBMIT RENTAL REQUEST
+========================================= */
+
+document
+    .getElementById("rentalBookingForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const messageElement =
+                document.getElementById(
+                    "rentalBookingMessage"
+                );
+
+
+            messageElement.textContent =
+                "";
+
+
+            /* -------------------------
+               CHECK LOGIN
+            ------------------------- */
+
+            const token =
+                localStorage.getItem(
+                    "novaToken"
+                );
+
+
+            if (!token) {
+
+                alert(
+                    "Please log in before submitting a rental request."
+                );
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+            /* -------------------------
+               GET FORM VALUES
+            ------------------------- */
+
+            const vehicleId =
+                document.getElementById(
+                    "rentalVehicleId"
+                ).value;
+
+
+            const rateType =
+                document.getElementById(
+                    "rentalRateType"
+                ).value;
+
+
+            const pickupDate =
+                document.getElementById(
+                    "rentalPickupDate"
+                ).value;
+
+
+            const returnDate =
+                document.getElementById(
+                    "rentalReturnDate"
+                ).value;
+
+
+            if (
+                !vehicleId ||
+                !rateType ||
+                !pickupDate ||
+                !returnDate
+            ) {
+
+                messageElement.textContent =
+                    "Please complete all rental information.";
+
+                return;
+
+            }
+
+
+            /* -------------------------
+               SUBMIT TO SERVER
+            ------------------------- */
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API}/api/rentals`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+
+                                "Authorization":
+                                    `Bearer ${token}`
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    vehicle_id:
+                                        Number(vehicleId),
+
+                                    pickup_date:
+                                        pickupDate,
+
+                                    return_date:
+                                        returnDate,
+
+                                    rate_type:
+                                        rateType
+                                })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to submit rental request."
+                    );
+
+                }
+
+
+                /* -------------------------
+                   SUCCESS
+                ------------------------- */
+
+                alert(
+                    "Rental request submitted successfully!\n\n" +
+                    "Total: $" +
+                    Number(
+                        data.totalPrice
+                    ).toLocaleString(
+                        undefined,
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    )
+                );
+
+
+                closeRentalBooking();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Rental request error:",
+                    error
+                );
+
+
+                messageElement.textContent =
+                    error.message;
+
+            }
+
+        }
+    );
+
+/* =========================================
+   START PAGE
+========================================= */
+
+loadRentals();
+
+</script>
+
+</body>
+
+</html>

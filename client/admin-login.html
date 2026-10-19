@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+<link rel="shortcut icon" type="x-icon" href="images/car.png">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Login | Nova Auto Parts & Service</title>
+
+    <link
+        rel="shortcut icon"
+        type="image/x-icon"
+        href="images/icon.png"
+    >
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="auth-page">
+
+<header class="site-header">
+
+    <nav class="navbar">
+
+        <a href="home.html" class="brand">
+
+            <span class="brand-icon">N</span>
+
+            <span>
+                <strong>NOVA</strong>
+                <small>AUTO PARTS & SERVICE</small>
+            </span>
+
+        </a>
+
+        <div class="nav-links">
+
+            <a href="home.html">Website</a>
+
+            <a href="rentals.html">Rentals</a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="auth-container">
+
+    <section class="auth-card admin-login-card">
+
+        <div class="auth-header">
+
+            <div class="auth-logo">
+                N
+            </div>
+
+            <span class="account-badge">
+                ADMINISTRATOR
+            </span>
+
+            <h1>
+                Admin Login
+            </h1>
+
+            <p>
+                Nova Auto Parts & Service Management
+            </p>
+
+        </div>
+
+
+        <form id="adminLoginForm">
+
+            <div class="form-group">
+
+                <label for="email">
+                    Administrator Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="admin@novaauto.com"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter admin password"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="auth-button"
+            >
+                Sign In as Admin
+            </button>
+
+
+            <div
+                id="loginMessage"
+                class="login-message"
+            ></div>
+
+        </form>
+
+
+        <div class="auth-divider">
+            <span>SECURE ADMIN AREA</span>
+        </div>
+
+
+        <p class="register-text">
+
+            <a href="home.html">
+                ← Return to Nova website
+            </a>
+
+        </p>
+
+    </section>
+
+</main>
+
+
+<footer class="site-footer">
+
+    <p>
+        © 2026 Nova Auto Parts & Service.
+        Administrator Portal.
+    </p>
+
+</footer>
+
+
+<script>
+
+const form =
+    document.getElementById("adminLoginForm");
+
+const message =
+    document.getElementById("loginMessage");
+
+
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+
+    message.textContent =
+        "Signing in...";
+
+    message.className =
+        "login-message success";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:3000/api/login",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Login failed."
+            );
+
+        }
+
+
+        // Make sure this account is actually an admin.
+        if (data.user.role !== "admin") {
+
+            throw new Error(
+                "This account does not have administrator access."
+            );
+
+        }
+
+
+        localStorage.setItem(
+            "novaAdminToken",
+            data.token
+        );
+
+
+        localStorage.setItem(
+            "novaAdminUser",
+            JSON.stringify(data.user)
+        );
+
+
+        message.textContent =
+            "Admin login successful!";
+
+        message.className =
+            "login-message success";
+
+
+        setTimeout(() => {
+
+            window.location.href =
+                "admin-dashboard.html";
+
+        }, 700);
+
+
+    } catch (error) {
+
+        message.textContent =
+            error.message;
+
+        message.className =
+            "login-message error";
+
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>

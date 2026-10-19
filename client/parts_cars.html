@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="shortcut icon" type="x-icon" href="images/car.png">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Parts | Nova Auto Parts & Service</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body class="nova-home page-parts">
+
+    <!-- NAVIGATION -->
+
+    <header class="site-header">
+
+        <div class="site-logo">
+            <span class="logo-nova">NOVA</span>
+
+            <span class="logo-subtitle">
+                AUTO PARTS & SERVICE
+            </span>
+        </div>
+
+        <nav class="site-nav">
+
+            <a href="home.html">Home</a>
+
+            <a href="arrivals.html">
+                Vehicles
+            </a>
+
+            <a href="parts_cars.html">
+                Parts
+            </a>
+
+            <a href="orders.html">
+                Orders
+            </a>
+
+            <a href="rentals.html">
+                Rentals
+            </a>
+
+            <a
+                href="account.html"
+                class="account-link"
+            >
+                My Account
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- PAGE HEADER -->
+
+    <section class="hero-section">
+
+        <div class="hero-content">
+
+            <p class="hero-label">
+                NOVA AUTO PARTS
+            </p>
+
+            <h1>
+                FIND THE
+                <span>RIGHT PART.</span>
+            </h1>
+
+            <p class="hero-description">
+                Browse automotive parts currently
+                available from Nova Auto Parts & Service.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- PARTS INVENTORY -->
+
+    <section class="inventory-section">
+
+        <div class="section-heading">
+
+            <p>
+                PARTS INVENTORY
+            </p>
+
+            <h2>
+                Available Parts
+            </h2>
+
+            <span>
+                Browse our current automotive parts.
+            </span>
+
+        </div>
+
+
+        <div
+            id="partsGrid"
+            class="vehicle-grid"
+        >
+
+            <div class="loading-message">
+                Loading parts...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+   <footer class="site-footer">
+
+    <div class="footer-contact">
+
+        <h3>CONTACT US</h3>
+
+        <div class="footer-contact-grid">
+
+            <div class="footer-contact-item">
+                <span>📞</span>
+                <div>
+                    <strong>Phone</strong>
+                    <p>+1 (246) 555-1234</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>💬</span>
+                <div>
+                    <strong>WhatsApp</strong>
+                    <p>+1 (246) 555-6789</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>✉️</span>
+                <div>
+                    <strong>Email</strong>
+                    <p>info@novaauto.com</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>📍</span>
+                <div>
+                    <strong>Location</strong>
+                    <p>Barbados</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-brand">
+        <strong>NOVA AUTO</strong>
+        <span>Auto Parts & Service</span>
+    </div>
+
+    <p class="footer-copyright">
+        © 2026 Nova Auto Parts & Service
+    </p>
+
+</footer>
+
+
+<script>
+
+// ========================================
+// LOAD PARTS FROM DATABASE
+// ========================================
+
+async function loadParts() {
+
+    const partsGrid =
+        document.getElementById("partsGrid");
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:3000/api/parts"
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load parts."
+            );
+
+        }
+
+        const parts =
+            await response.json();
+
+
+        // Don't display sold parts
+
+        const availableParts =
+            parts.filter(
+                part =>
+                    part.status !== "sold"
+            );
+
+
+        if (availableParts.length === 0) {
+
+            partsGrid.innerHTML = `
+
+                <div class="empty-inventory">
+
+                    <h3>
+                        No parts available
+                    </h3>
+
+                    <p>
+                        Check back soon for
+                        new inventory.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        partsGrid.innerHTML =
+            availableParts
+                .map(part => `
+
+                    <article class="vehicle-card">
+
+                        <div class="vehicle-image">
+
+                            ${
+                                part.image
+                                    ? `
+                                        <img
+                                            src="${part.image}"
+                                            alt="${part.name}"
+                                        >
+                                      `
+                                    : `
+                                        <div class="no-image">
+                                            🔧
+                                            <br>
+                                            No Image Available
+                                        </div>
+                                      `
+                            }
+
+                        </div>
+
+
+                        <div class="vehicle-info">
+
+                            <div class="vehicle-category">
+                                AUTO PART
+                            </div>
+
+                            <h3>
+                                ${part.name}
+                            </h3>
+
+                            <p class="vehicle-description">
+
+                                ${
+                                    part.description ||
+                                    "Automotive part available from Nova Auto."
+                                }
+
+                            </p>
+
+
+                            <div class="vehicle-bottom">
+
+                                <strong class="vehicle-price">
+
+                                    $${Number(
+                                        part.price
+                                    ).toLocaleString()}
+
+                                </strong>
+
+
+                                <a
+                                    href="orders.html?type=part&id=${part.id}"
+                                    class="vehicle-button"
+                                >
+                                    Order Part
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                `)
+                .join("");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        partsGrid.innerHTML = `
+
+            <div class="empty-inventory">
+
+                <h3>
+                    Unable to load parts
+                </h3>
+
+                <p>
+                    Please make sure the Nova Auto
+                    server is running.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+loadParts();
+
+</script>
+
+</body>
+
+</html>

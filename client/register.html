@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <link rel="shortcut icon" type="x-icon" href="images/car.png">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create Account | Nova Auto Parts & Service</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body class="auth-page-body page-register">
+
+    <main class="auth-page">
+
+        <div class="auth-card">
+
+            <div class="account-badge">
+                CUSTOMER ACCOUNT
+            </div>
+
+            <h1>
+                Create Account
+            </h1>
+
+            <p>
+                Create your Nova Auto Parts & Service account.
+            </p>
+
+
+            <form id="registerForm">
+
+                <label for="name">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Create a password"
+                    minlength="6"
+                    required
+                >
+
+
+                <label for="confirmPassword">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm your password"
+                    minlength="6"
+                    required
+                >
+
+
+                <button
+                    type="submit"
+                    class="primary-admin-button"
+                >
+                    Create Account
+                </button>
+
+            </form>
+
+
+            <p class="auth-switch">
+
+                Already have an account?
+
+                <a href="login.html">
+                    Login
+                </a>
+
+            </p>
+
+
+            <p class="auth-switch">
+
+                <a href="home.html">
+                    ← Back to Nova Auto
+                </a>
+
+            </p>
+
+        </div>
+
+    </main>
+
+
+<script>
+
+const registerForm =
+    document.getElementById("registerForm");
+
+
+registerForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const name =
+            document
+                .getElementById("name")
+                .value
+                .trim();
+
+
+        const email =
+            document
+                .getElementById("email")
+                .value
+                .trim();
+
+
+        const password =
+            document
+                .getElementById("password")
+                .value;
+
+
+        const confirmPassword =
+            document
+                .getElementById("confirmPassword")
+                .value;
+
+
+        // Check passwords
+
+        if (password !== confirmPassword) {
+
+            alert(
+                "Passwords do not match."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:3000/api/register",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                name,
+                                email,
+                                password
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Registration failed."
+                );
+
+            }
+
+
+            // Save customer login
+
+            localStorage.setItem(
+                "novaToken",
+                data.token
+            );
+
+
+            localStorage.setItem(
+                "novaUser",
+                JSON.stringify(
+                    data.user
+                )
+            );
+
+
+            alert(
+                "Account created successfully!"
+            );
+
+
+            window.location.href =
+                "account.html";
+
+
+        } catch (error) {
+
+            alert(
+                error.message
+            );
+
+        }
+
+    }
+);
+
+<footer class="site-footer">
+
+    <div class="footer-contact">
+
+        <h3>CONTACT US</h3>
+
+        <div class="footer-contact-grid">
+
+            <div class="footer-contact-item">
+                <span>📞</span>
+                <div>
+                    <strong>Phone</strong>
+                    <p>+1 (246) 555-1234</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>💬</span>
+                <div>
+                    <strong>WhatsApp</strong>
+                    <p>+1 (246) 555-6789</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>✉️</span>
+                <div>
+                    <strong>Email</strong>
+                    <p>info@novaauto.com</p>
+                </div>
+            </div>
+
+            <div class="footer-contact-item">
+                <span>📍</span>
+                <div>
+                    <strong>Location</strong>
+                    <p>Barbados</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-brand">
+        <strong>NOVA AUTO</strong>
+        <span>Auto Parts & Service</span>
+    </div>
+
+    <p class="footer-copyright">
+        © 2026 Nova Auto Parts & Service
+    </p>
+
+</footer>
+
+</script>
+
+</body>
+
+</html>

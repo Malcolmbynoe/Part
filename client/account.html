@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <link
+        rel="shortcut icon"
+        type="x-icon"
+        href="images/car.png"
+    >
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        My Account | Nova Auto Parts & Service
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body class="auth-page-body page-account">
+
+
+<!-- =========================================
+     ACCOUNT PAGE
+========================================= -->
+
+<main class="auth-page account-page">
+
+    <div class="account-dashboard-layout">
+
+
+        <!-- =====================================
+             LEFT SIDE - CUSTOMER ACCOUNT
+        ====================================== -->
+
+        <div class="auth-card account-main-card">
+
+
+            <div class="account-badge">
+                CUSTOMER ACCOUNT
+            </div>
+
+
+            <h1>
+                My Account
+            </h1>
+
+
+            <p id="welcomeMessage">
+                Loading your account...
+            </p>
+
+
+            <!-- CUSTOMER DETAILS -->
+
+            <div class="account-details">
+
+                <p>
+                    <strong>
+                        Name:
+                    </strong>
+
+                    <span id="customerName">
+                        Loading...
+                    </span>
+                </p>
+
+
+                <p>
+                    <strong>
+                        Email:
+                    </strong>
+
+                    <span id="customerEmail">
+                        Loading...
+                    </span>
+                </p>
+
+
+                <p>
+                    <strong>
+                        Account Type:
+                    </strong>
+
+                    <span id="customerRole">
+                        Customer
+                    </span>
+                </p>
+
+            </div>
+
+
+            <!-- =================================
+                 MY ORDERS
+            ================================== -->
+
+            <section class="my-orders-section">
+
+                <h2>
+                    My Orders
+                </h2>
+
+
+                <div id="myOrders">
+
+                    <p>
+                        Loading orders...
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- LOGOUT -->
+
+            <button
+                type="button"
+                class="primary-admin-button"
+                onclick="logout()"
+            >
+                Logout
+            </button>
+
+
+            <p class="auth-switch">
+
+                <a href="home.html">
+                    ← Back to Nova Auto
+                </a>
+
+            </p>
+
+
+        </div>
+
+
+        <!-- =====================================
+             RIGHT SIDE - MY RENTALS
+        ====================================== -->
+
+        <section class="account-rentals-panel">
+
+
+            <div class="account-badge">
+                VEHICLE RENTALS
+            </div>
+
+
+            <h1>
+                My Rentals
+            </h1>
+
+
+            <p class="rentals-intro">
+                View your rental requests,
+                dates, totals and current status.
+            </p>
+
+
+            <div
+                id="myRentals"
+                class="customer-rentals"
+            >
+
+                <p>
+                    Loading your rentals...
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
+
+
+
+<script>
+
+async function loadAccount() {
+
+    const token =
+        localStorage.getItem(
+            "novaToken"
+        );
+
+
+    // No login found
+
+    if (!token) {
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:3000/api/me",
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Unable to load account."
+            );
+
+        }
+
+
+        // Display customer information
+
+        document.getElementById(
+            "welcomeMessage"
+        ).textContent =
+            `Welcome, ${data.name}!`;
+
+
+        document.getElementById(
+            "customerName"
+        ).textContent =
+            data.name;
+
+
+        document.getElementById(
+            "customerEmail"
+        ).textContent =
+            data.email;
+
+
+        document.getElementById(
+            "customerRole"
+        ).textContent =
+            data.role;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        localStorage.removeItem(
+            "novaToken"
+        );
+
+        localStorage.removeItem(
+            "novaUser"
+        );
+
+        alert(
+            "Your session has expired. Please login again."
+        );
+
+        window.location.href =
+            "login.html";
+
+    }
+
+}
+
+
+function logout() {
+
+    localStorage.removeItem(
+        "novaToken"
+    );
+
+    localStorage.removeItem(
+        "novaUser"
+    );
+
+    window.location.href =
+        "login.html";
+
+}
+
+async function loadMyOrders() {
+
+    const token =
+        localStorage.getItem("novaToken");
+
+    const container =
+        document.getElementById("myOrders");
+
+
+    if (!token) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:3000/api/my-orders",
+                {
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        const orders =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                orders.error ||
+                "Unable to load orders."
+            );
+
+        }
+
+
+        if (orders.length === 0) {
+
+            container.innerHTML = `
+                <p>
+                    You have no orders yet.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            orders.map(order => `
+
+                <div class="customer-order-card">
+
+                    <h3>
+                        #${order.id}
+                        ${order.item_description}
+                    </h3>
+
+                    <p>
+                        <strong>Quantity:</strong>
+                        ${order.quantity}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        ${order.status}
+                    </p>
+
+                    <p>
+                        <strong>Ordered:</strong>
+
+                        ${new Date(
+                            order.created_at
+                        ).toLocaleDateString(
+                            "en-US",
+                            {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric"
+                            }
+                        )}
+
+                    </p>
+
+                </div>
+
+            `).join("");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        container.innerHTML = `
+            <p>
+                Unable to load orders.
+            </p>
+        `;
+
+    }
+
+}
+
+/* =========================================
+   LOAD CUSTOMER RENTALS
+========================================= */
+
+async function loadMyRentals() {
+
+    const token =
+        localStorage.getItem(
+            "novaToken"
+        );
+
+
+    const container =
+        document.getElementById(
+            "myRentals"
+        );
+
+
+    if (!token || !container) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:3000/api/my-rentals",
+                {
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        const rentals =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                rentals.error ||
+                "Unable to load rentals."
+            );
+
+        }
+
+
+        if (rentals.length === 0) {
+
+            container.innerHTML = `
+
+                <div class="customer-rental-empty">
+
+                    <p>
+                        You have no rental requests yet.
+                    </p>
+
+                    <a
+                        href="rentals.html"
+                        class="vehicle-button"
+                    >
+                        Browse Rentals
+                    </a>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            rentals.map(rental => {
+
+
+                const pickup =
+                    new Date(
+                        rental.pickup_date +
+                        "T00:00:00"
+                    )
+                    .toLocaleDateString(
+                        "en-US",
+                        {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric"
+                        }
+                    );
+
+
+                const returning =
+                    new Date(
+                        rental.return_date +
+                        "T00:00:00"
+                    )
+                    .toLocaleDateString(
+                        "en-US",
+                        {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric"
+                        }
+                    );
+
+
+                const rateType =
+                    String(
+                        rental.rate_type || ""
+                    );
+
+
+                const formattedRateType =
+                    rateType
+                        ? rateType
+                            .charAt(0)
+                            .toUpperCase() +
+                          rateType.slice(1)
+                        : "—";
+
+
+                const total =
+                    Number(
+                        rental.total_price
+                    )
+                    .toLocaleString(
+                        undefined,
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    );
+
+
+                const status =
+                    String(
+                        rental.status ||
+                        "pending"
+                    ).toLowerCase();
+
+
+                const image =
+                    rental.vehicle_image
+                        ? `
+                            <img
+                                src="${rental.vehicle_image}"
+                                alt="${rental.vehicle_name}"
+                                class="customer-rental-image"
+                            >
+                        `
+                        : `
+                            <div class="customer-rental-no-image">
+                                🚗
+                            </div>
+                        `;
+
+
+                return `
+
+                    <article
+                        class="customer-rental-card"
+                    >
+
+                        ${image}
+
+
+                        <div
+                            class="customer-rental-info"
+                        >
+
+                            <div
+                                class="customer-rental-header"
+                            >
+
+                                <div>
+
+                                    <span
+                                        class="
+                                            rental-status
+                                            rental-status-${status}
+                                        "
+                                    >
+                                        ${status}
+                                    </span>
+
+
+                                    <h3>
+                                        ${rental.vehicle_name}
+                                    </h3>
+
+
+                                    ${
+                                        rental.vehicle_year
+                                            ? `
+                                                <p>
+                                                    ${rental.vehicle_year}
+                                                </p>
+                                            `
+                                            : ""
+                                    }
+
+                                </div>
+
+
+                                <strong
+                                    class="customer-rental-total"
+                                >
+                                    $${total}
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                class="customer-rental-details"
+                            >
+
+                                <div>
+
+                                    <span>
+                                        PICKUP
+                                    </span>
+
+                                    <strong>
+                                        ${pickup}
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        RETURN
+                                    </span>
+
+                                    <strong>
+                                        ${returning}
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        RATE TYPE
+                                    </span>
+
+                                    <strong>
+                                        ${formattedRateType}
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        RENTAL #
+                                    </span>
+
+                                    <strong>
+                                        #${rental.id}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                `;
+
+            }).join("");
+
+
+    } catch (error) {
+
+        console.error(
+            "My rentals error:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <p>
+                Unable to load your rentals.
+            </p>
+
+        `;
+
+    }
+
+}
+
+/* =========================================
+   START ACCOUNT PAGE
+========================================= */
+
+
+loadAccount();
+loadMyOrders();
+loadMyRentals();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <link rel="shortcut icon" type="x-icon" href="images/car.png">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | Nova Auto Parts & Service</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body class="auth-page-body page-login">
+
+    <main class="auth-page">
+
+        <div class="auth-card">
+
+            <div class="account-badge">
+                CUSTOMER ACCOUNT
+            </div>
+
+            <h1>
+                Welcome Back
+            </h1>
+
+            <p>
+                Login to your Nova Auto Parts & Service account.
+            </p>
+
+
+            <form id="loginForm">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+
+                <button
+                    type="submit"
+                    class="primary-admin-button"
+                >
+                    Login
+                </button>
+
+            </form>
+
+<div class="admin-login-option">
+
+    <div class="admin-login-divider">
+        <span>OR</span>
+    </div>
+
+    <p>
+        Are you a Nova administrator?
+    </p>
+
+    <a
+        href="admin-login.html"
+        class="admin-login-button"
+    >
+        🛡️ Admin Login
+    </a>
+
+</div>
+
+            <p class="auth-switch">
+
+                Don't have an account?
+
+                <a href="register.html">
+                    Create Account
+                </a>
+
+            </p>
+
+
+            <p class="auth-switch">
+
+                <a href="home.html">
+                    ← Back to Nova Auto
+                </a>
+
+            </p>
+
+        </div>
+
+    </main>
+
+
+<script>
+
+const loginForm =
+    document.getElementById("loginForm");
+
+
+loginForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const email =
+            document
+                .getElementById("email")
+                .value
+                .trim();
+
+
+        const password =
+            document
+                .getElementById("password")
+                .value;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:3000/api/login",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                email,
+                                password
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Login failed."
+                );
+
+            }
+
+
+            // Only customers can use this page
+
+            if (
+                !data.user ||
+                data.user.role !== "customer"
+            ) {
+
+                throw new Error(
+                    "Please use the administrator login."
+                );
+
+            }
+
+
+            // Save customer session
+
+            localStorage.setItem(
+                "novaToken",
+                data.token
+            );
+
+
+            localStorage.setItem(
+                "novaUser",
+                JSON.stringify(
+                    data.user
+                )
+            );
+
+
+            alert(
+                "Login successful!"
+            );
+
+
+            window.location.href =
+                "account.html";
+
+
+        } catch (error) {
+
+            alert(
+                error.message
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
